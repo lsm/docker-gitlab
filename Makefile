@@ -16,6 +16,15 @@ build:
 release: build
 	@docker build --tag=sameersbn/gitlab:$(shell cat VERSION) .
 
+ee-build:
+	@docker build --tag=llsm/gitlab-ee .
+
+ee-release: build
+	@docker build --tag=llsm/gitlab-ee:$(shell cat VERSION) .
+
+publish:
+	docker push llsm/gitlab-ee:$(shell cat VERSION)
+
 quickstart:
 	@echo "Starting postgresql container..."
 	@docker run --name=gitlab-postgresql -d \
