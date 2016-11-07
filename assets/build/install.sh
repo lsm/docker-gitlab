@@ -8,7 +8,7 @@ GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse/repository/a
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
 BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
-  libc6-dev ruby2.1-dev \
+  libc6-dev ruby${RUBY_VERSION}-dev \
   libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev"
@@ -231,16 +231,7 @@ priority=10
 directory=${GITLAB_INSTALL_DIR}
 environment=HOME=${GITLAB_HOME}
 command=bundle exec sidekiq -c {{SIDEKIQ_CONCURRENCY}}
-  -q post_receive
-  -q mailers
-  -q archive_repo
-  -q system_hook
-  -q project_web_hook
-  -q gitlab_shell
-  -q incoming_email
-  -q runner
-  -q common
-  -q default
+  -C ${GITLAB_INSTALL_DIR}/config/sidekiq_queues.yml
   -e ${RAILS_ENV}
   -t {{SIDEKIQ_SHUTDOWN_TIMEOUT}}
   -P ${GITLAB_INSTALL_DIR}/tmp/pids/sidekiq.pid
