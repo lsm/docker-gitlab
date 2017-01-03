@@ -17,10 +17,11 @@ release: build
 	@docker build --tag=sameersbn/gitlab:$(shell cat VERSION) .
 
 ee-build:
-	@docker build --tag=llsm/gitlab-ee:$(shell cat VERSION) .
+	@docker build --tag=llsm/gitlab-ee:$(shell cat VERSION) --tag=llsm/gitlab-ee:latest .
 
 ee-publish:
 	docker push llsm/gitlab-ee:$(shell cat VERSION)
+	docker push llsm/gitlab-ee:latest
 
 ee-release: ee-build ee-publish
 
