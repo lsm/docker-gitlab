@@ -1,6 +1,10 @@
 [![Docker Repository on Quay.io](https://quay.io/repository/sameersbn/gitlab/status "Docker Repository on Quay.io")](https://quay.io/repository/sameersbn/gitlab)
 [![](https://images.microbadger.com/badges/image/sameersbn/gitlab.svg)](http://microbadger.com/images/sameersbn/gitlab "Get your own image badge on microbadger.com")
-# sameersbn/gitlab:8.15.2
+# llsm/gitlab-ee:8.15.2-ee
+
+**This is an enterprise edition forked from the upstream community edtion (https://github.com/sameersbn/docker-gitlab)**
+**Github:** https://github.com/lsm/docker-gitlab-ee
+**Docker hub:** https://hub.docker.com/r/llsm/gitlab-ee/
 
 - [Introduction](#introduction)
     - [Changelog](Changelog.md)
