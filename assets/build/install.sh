@@ -4,6 +4,7 @@ set -e
 GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ee.git
 GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz
 GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse/repository/archive.tar.gz
+GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages/repository/archive.tar.gz
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
@@ -44,6 +45,7 @@ EOF
 # configure git for ${GITLAB_USER}
 exec_as_git git config --global core.autocrlf input
 exec_as_git git config --global gc.auto 0
+exec_as_git git config --global repack.writeBitmaps true
 
 # install gitlab-shell
 echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
@@ -60,6 +62,7 @@ exec_as_git ./bin/install
 # remove unused repositories directory created by gitlab-shell install
 exec_as_git rm -rf ${GITLAB_HOME}/repositories
 
+# download gitlab-workhose
 echo "Downloading gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
 mkdir -p ${GITLAB_WORKHORSE_INSTALL_DIR}
 wget -cq ${GITLAB_WORKHORSE_URL}?ref=v${GITLAB_WORKHORSE_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz
@@ -67,12 +70,31 @@ tar xf ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz -
 rm -rf ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz
 chown -R ${GITLAB_USER}: ${GITLAB_WORKHORSE_INSTALL_DIR}
 
+#download golang
 echo "Downloading Go ${GOLANG_VERSION}..."
 wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
 tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
 
+#install gitlab-workhorse
 cd ${GITLAB_WORKHORSE_INSTALL_DIR}
 PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
+
+#download pages
+echo "Downloading gitlab-pages v.${GITLAB_PAGES_VERSION}..."
+mkdir -p ${GITLAB_PAGES_INSTALL_DIR}
+wget -cq ${GITLAB_PAGES_URL}?ref=v${GITLAB_PAGES_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-pages-${GITLAB_PAGES_VERSION}.tar.gz
+tar xf ${GITLAB_BUILD_DIR}/gitlab-pages-${GITLAB_PAGES_VERSION}.tar.gz --strip 1 -C ${GITLAB_PAGES_INSTALL_DIR}
+rm -rf ${GITLAB_BUILD_DIR}/gitlab-pages-${GITLAB_PAGES_VERSION}.tar.gz
+chown -R ${GITLAB_USER}: ${GITLAB_PAGES_INSTALL_DIR}
+
+#install gitlab-pages
+cd ${GITLAB_PAGES_INSTALL_DIR}
+GODIR=/tmp/go/src/gitlab.com/gitlab-org/gitlab-pages
+mkdir -p "$(dirname "$GODIR")"
+ln -sfv "$(pwd -P)" "$GODIR"
+cd "$GODIR"
+PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make gitlab-pages
+mv gitlab-pages /usr/local/bin/
 
 # remove go
 rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz /tmp/go
@@ -103,8 +125,13 @@ chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_DIR}/config/database.yml
 
+# Installs nodejs packages required to compile webpack
+exec_as_git yarn install --production --pure-lockfile
+
 echo "Compiling assets. Please be patient, this could take a while..."
-exec_as_git bundle exec rake assets:clean assets:precompile USE_DB=false SKIP_STORAGE_VALIDATION=true >/dev/null 2>&1
+#Adding webpack compile needed since 8.17
+exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true >/dev/null 2>&1
+
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml

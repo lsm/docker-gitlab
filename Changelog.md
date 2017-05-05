@@ -2,10 +2,87 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
-**8.15.2
+**9.0.5**
+- gitlab: upgrade to CE v9.0.5
+
+**9.0.4**
+- gitlab: upgrade to CE v9.0.4
+
+**9.0.3**
+- gitlab: upgrade to CE v9.0.3
+
+**9.0.2**
+- gitlab: upgrade to CE v9.0.2
+
+**9.0.1**
+- gitlab: upgrade to CE v9.0.1
+- gitlab-workhorse 1.4.2
+
+**9.0.0**
+- gitlab: upgrade to CE v9.0.0
+- gitlab-shell 5.0.0
+- gitlab-workhorse 1.4.1
+- gitlab-pages 0.4.0
+
+**8.17.4**
+- gitlab: upgrade to CE v8.17.4
+
+**8.17.3**
+- gitlab: upgrade to CE v8.17.3
+
+**8.17.2**
+- gitlab: upgrade to CE v8.17.2
+
+**8.17.1**
+- gitlab: upgrade to CE v8.17.1
+- fixes first problems with gitlab-pages
+
+**8.17.0**
+- gitlab: upgrade to CE v8.17.0
+- added `GITLAB_PAGES_ENABLED`
+- added `GITLAB_PAGES_DOMAIN`
+- added `GITLAB_PAGES_DIR`
+- added `GITLAB_PAGES_PORT`
+- added `GITLAB_PAGES_HTTPS`
+- added `GITLAB_PAGES_EXTERNAL_HTTP`
+- added `GITLAB_PAGES_EXTERNAL_HTTPS`
+- added `SSL_PAGES_KEY_PATH`
+- added `SSL_PAGES_CERT_PATH`
+- added nodejs 7.x as core dependencie
+- added gitlab-pages daemon
+
+**8.16.6**
+- gitlab: upgrade to CE v8.16.6
+- Fix logical bug of Remote Backup
+
+**8.16.5**
+- gitlab: upgrade to CE v8.16.5
+
+**8.16.4**
+- gitlab: upgrade to CE v8.16.4
+
+**8.16.3**
+- gitlab: upgrade to CE v8.16.3
+
+**8.16.2**
+- gitlab: upgrade to CE v8.16.2
+
+**8.16.1**
+- gitlab: upgrade to CE v8.16.1
+
+**8.16.0**
+- gitlab: upgrade to CE v8.16.0
+
+**8.15.4**
+- gitlab: upgrade to CE v8.15.4
+
+**8.15.3**
+- gitlab: upgrade to CE v8.15.3
+
+**8.15.2**
 - gitlab: upgrade to CE v8.15.2
 
-**8.15.1
+**8.15.1**
 - gitlab: upgrade to CE v8.15.1
 
 **8.15.0**

@@ -1,11 +1,12 @@
-FROM sameersbn/ubuntu:14.04.20161217
+FROM sameersbn/ubuntu:14.04.20170228
 MAINTAINER sameer@damagehead.com
 
-ENV GITLAB_VERSION=8.15.2-ee \
+ENV GITLAB_VERSION=9.0.5-ee \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.6.3 \
-    GITLAB_SHELL_VERSION=4.1.1 \
-    GITLAB_WORKHORSE_VERSION=1.2.1 \
+    GITLAB_SHELL_VERSION=5.0.0 \
+    GITLAB_WORKHORSE_VERSION=1.4.2 \
+    GITLAB_PAGES_VERSION=0.4.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -15,6 +16,7 @@ ENV GITLAB_VERSION=8.15.2-ee \
 ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_SHELL_INSTALL_DIR="${GITLAB_HOME}/gitlab-shell" \
     GITLAB_WORKHORSE_INSTALL_DIR="${GITLAB_HOME}/gitlab-workhorse" \
+    GITLAB_PAGES_INSTALL_DIR="${GITLAB_HOME}/gitlab-pages" \
     GITLAB_DATA_DIR="${GITLAB_HOME}/data" \
     GITLAB_BUILD_DIR="${GITLAB_CACHE_DIR}/build" \
     GITLAB_RUNTIME_DIR="${GITLAB_CACHE_DIR}/runtime"
@@ -27,10 +29,14 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && echo "deb http://ppa.launchpad.net/nginx/stable/ubuntu trusty main" >> /etc/apt/sources.list \
  && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
  && echo 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
+ && wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
+ && echo 'deb https://deb.nodesource.com/node_7.x trusty main' > /etc/apt/sources.list.d/nodesource.list \
+ && wget --quiet -O - https://dl.yarnpkg.com/debian/pubkey.gpg  | apt-key add - \
+ && echo 'deb https://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor logrotate locales curl \
       nginx openssh-server mysql-client postgresql-client redis-tools \
-      git-core ruby${RUBY_VERSION} python2.7 python-docutils nodejs gettext-base \
+      git-core ruby${RUBY_VERSION} python2.7 python-docutils nodejs yarn gettext-base \
       libmysqlclient18 libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
       libgdbm3 libreadline6 libncurses5 libffi6 \
       libxml2 libxslt1.1 libcurl3 libicu52 \
